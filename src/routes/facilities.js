@@ -3,6 +3,16 @@ const router = express.Router();
 const pool = require("../db");
 const { requireAuth, requireRole } = require("../middleware/auth");
 
+// GET /api/facilities - قائمة مبسّطة بكل المصانع (الاسم فقط) تُستخدم عند تسجيل موظف جديد ليختار مصنعه
+router.get("/", async (req, res, next) => {
+  try {
+    const [rows] = await pool.query("SELECT id, name FROM facilities ORDER BY name ASC");
+    res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /api/facilities/:id
 router.get("/:id", async (req, res, next) => {
   try {

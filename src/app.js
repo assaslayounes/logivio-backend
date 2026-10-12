@@ -15,7 +15,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => res.json({ status: "logivio-backend يعمل بنجاح" }));
+app.get("/", (req, res) => res.json({ status: "capaflow-backend يعمل بنجاح" }));
 
 app.use("/api/auth", authRouter);
 app.use("/api/facilities", facilitiesRouter);

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const { requireAuth, requireRole } = require("../middleware/auth");
 
 // GET /api/gates?facilityId=1 - حالة كل البوابات الآن
 router.get("/", async (req, res, next) => {
@@ -8,6 +9,27 @@ router.get("/", async (req, res, next) => {
     const { facilityId } = req.query;
     const [rows] = await pool.query("SELECT * FROM gates WHERE facility_id = ? ORDER BY name ASC", [facilityId || 1]);
     res.json(rows);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/gates - إضافة بوابة جديدة لمصنع المسؤول
+router.post("/", requireAuth, requireRole("admin"), async (req, res, next) => {
+  try {
+    const { name, avgCheckinMinutes } = req.body;
+    if (!name || !String(name).trim()) return res.status(400).json({ error: "اسم البوابة مطلوب" });
+    const minutes = Number(avgCheckinMinutes) > 0 ? Number(avgCheckinMinutes) : 5;
+    try {
+      const [result] = await pool.query(
+        "INSERT INTO gates (facility_id, name, avg_checkin_minutes, status) VALUES (?, ?, ?, 'available')",
+        [req.user.facilityId, String(name).trim(), minutes]
+      );
+      res.status(201).json({ id: result.insertId });
+    } catch (e) {
+      if (e.code === "ER_DUP_ENTRY") return res.status(409).json({ error: "توجد بوابة بنفس الاسم في مصنعك" });
+      throw e;
+    }
   } catch (err) {
     next(err);
   }

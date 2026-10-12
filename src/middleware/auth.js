@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = process.env.JWT_SECRET || "logivio-dev-secret-change-me";
+const JWT_SECRET = process.env.JWT_SECRET || "capaflow-dev-secret-change-me";
 
 function requireAuth(req, res, next) {
   const header = req.headers.authorization;

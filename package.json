@@ -1,5 +1,5 @@
 {
-  "name": "logivio-backend",
+  "name": "capaflow-backend",
   "version": "1.0.0",
   "description": "Backend API لنموذج Logivio الأولي - إدارة مواعيد وطوابير الشاحنات",
   "main": "src/server.js",
